@@ -2,7 +2,7 @@
 pragma solidity ^0.8.17;
 
 // Insurance abstract contract defining the basic structure of the insurance policy
-abstract contract Insurance {
+abstract contract InsurancePolicy {
     // Address of the insurer (the one who created the contract)
     address public insurer;        
     // Address of the insured (the person being covered)
@@ -25,17 +25,26 @@ abstract contract Insurance {
         // Set the coverage amount
         coverageAmount = _coverageAmount;  
         // The policy is initially active
-        isActive = true;             
+        isActive = true;
     }
+
+
+    fallback() external payable { }
+
+    receive() external payable { }
 
     // Allows the insured to pay the premium for the insurance policy
     // The premium amount must be sent along with the transaction
     function payPremium() public payable {
         require(msg.sender == insured, "Only the insured can pay the premium");
-        require(msg.value == premium, "Must pay the exact premium amount");
+        // require(amount == premium, "Must pay the exact premium amount");
+    
+        // payable(msg.sender).transfer(premium);
+        (bool _sent, ) = payable(insured).call{value: coverageAmount}("");
+        require(_sent, "Failed to send Ether");
     }
 
     // Abstract function to be implemented in derived contracts
     // Used for the insured to claim insurance in case of a covered event
-    function claimInsurance() public virtual;
+    function claimInsurance() public payable virtual;
 }

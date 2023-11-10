@@ -9,7 +9,7 @@ import "./LoanInsurance.sol";
 // Factory contract to create and manage insurance contracts
 contract InsuranceFactory {
     // Mapping to store addresses of created insurance contracts
-    mapping(address => Insurance) public contracts;
+    mapping(address => InsurancePolicy) public contracts;
 
     // Function to create a new WalletInsurance contract
     function createWalletInsurance(address _insured, uint _premium, uint _coverageAmount) public returns (address) {
